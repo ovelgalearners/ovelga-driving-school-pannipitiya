@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ovelga Driving School - Modern Driving Academy & Management Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef8ff',
+                            100: '#d8f0ff',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            dark: '#030712',
+                            card: '#0f172a'
+                        },
+                        neon: {
+                            blue: '#00f0ff',
+                            cyan: '#06b6d4',
+                            green: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf for Receipt Printing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
+            transform: translateY(-2px);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-cyan-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30">
+                    <i class="fa-solid fa-car-side text-2xl"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">OVELGA</span>
+                    <span class="block text-[10px] tracking-widest text-cyan-400 font-bold uppercase -mt-1">Driving Academy</span>
+                </div>
+            </div>
+
+            <!-- Main Nav Links -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <button onclick="switchTab('home')" class="nav-btn text-cyan-400 font-semibold px-3 py-2 rounded-lg hover:bg-cyan-950/50 transition">Home</button>
+                <button onclick="switchTab('packages')" class="nav-btn text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-950/50 transition">Packages & Calculator</button>
+                <button onclick="switchTab('tutorials')" class="nav-btn text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-950/50 transition">Video Tutorials</button>
+                <button onclick="switchTab('student')" class="nav-btn text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-950/50 transition">Student Portal</button>
+                <button onclick="switchTab('admin')" class="nav-btn text-gray-300 hover:text-cyan-400 px-3 py-2 rounded-lg hover:bg-cyan-950/50 transition">Admin Portal</button>
+            </nav>
+
+            <!-- Quick Action / Direct WhatsApp Button -->
+            <div class="hidden sm:flex items-center space-x-3">
+                <button onclick="openWhatsAppDirect('Machan, I would like to inquire about Ovelga Driving School course options!')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl flex items-center space-x-2 shadow-lg shadow-emerald-600/30 transition transform hover:-translate-y-0.5">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Quick Chat</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-white p-2">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-gray-800 px-4 py-4 space-y-3">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 text-cyan-400 font-semibold rounded-lg hover:bg-gray-800">Home</button>
+            <button onclick="switchTab('packages'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 text-gray-300 hover:text-cyan-400 rounded-lg hover:bg-gray-800">Packages & Calculator</button>
+            <button onclick="switchTab('tutorials'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 text-gray-300 hover:text-cyan-400 rounded-lg hover:bg-gray-800">Video Tutorials</button>
+            <button onclick="switchTab('student'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 text-gray-300 hover:text-cyan-400 rounded-lg hover:bg-gray-800">Student Portal</button>
+            <button onclick="switchTab('admin'); toggleMobileMenu()" class="block w-full text-left py-2 px-3 text-gray-300 hover:text-cyan-400 rounded-lg hover:bg-gray-800">Admin Management</button>
+            <button onclick="openWhatsAppDirect('Hello Ovelga Team, I want to inquire about driving lessons.')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded-xl flex items-center justify-center space-x-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span>Direct WhatsApp Inquiry</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="pt-24 min-h-screen pb-16">
+        
+        <!-- ================= SECTION: HOME ================= -->
+        <section id="tab-home" class="tab-content block">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Background Ambient Lights -->
+                <div class="absolute -top-10 -left-10 w-96 h-96 bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute top-1/2 -right-10 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center space-x-2 bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide shadow-inner">
+                            <i class="fa-solid fa-award text-yellow-400"></i>
+                            <span>#1 Rated Driving Academy in Colombo & Suburbs</span>
+                        </div>
+                        
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight">
+                            Drive With Confidence. <br>
+                            <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Master The Road With Ovelga.</span>
+                        </h1>
+                        
+                        <p class="text-gray-300 text-lg max-w-2xl leading-relaxed">
+                            Professional 30-minute practice lessons, dual-control modern fleet, flexible schedules, and direct online registration. Get your license passed in 1st attempt!
+                        </p>
+
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <button onclick="switchTab('packages')" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-7 py-3.5 rounded-xl shadow-xl shadow-cyan-500/25 flex items-center space-x-3 transition transform hover:-translate-y-1">
+                                <span>Build Your Custom Package</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            
+                            <button onclick="openPaymentModal(22500, 'Full Light Vehicle Course (Manual/Auto)')" class="bg-gray-900/80 hover:bg-gray-800 text-cyan-300 border border-cyan-500/40 font-semibold px-6 py-3.5 rounded-xl transition flex items-center space-x-2">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <span>Pay Advance / Quick Enroll</span>
+                            </button>
+                        </div>
+
+                        <!-- Stats Strip -->
+                        <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-800/80">
+                            <div>
+                                <p class="text-3xl font-black text-white">99.4%</p>
+                                <p class="text-xs text-cyan-400 uppercase font-semibold">Trial Pass Rate</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-black text-white">12,500+</p>
+                                <p class="text-xs text-cyan-400 uppercase font-semibold">Drivers Qualified</p>
+                            </div>
+                            <div>
+                                <p class="text-3xl font-black text-white">3 Branches</p>
+                                <p class="text-xs text-cyan-400 uppercase font-semibold">Maharagama / Pannipitiya</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual Card -->
+                    <div class="lg:col-span-5 relative">
+                        <div class="glass-card rounded-3xl p-4 overflow-hidden border border-cyan-500/30 relative group shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80" alt="Driving Lesson Ovelga" class="rounded-2xl w-full h-80 object-cover transform transition duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent opacity-80"></div>
+                            
+                            <div class="absolute bottom-6 left-6 right-6 p-4 glass-panel rounded-2xl border border-cyan-400/30">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-bold text-white text-base">Dual Control Modern Fleet</h4>
+                                        <p class="text-xs text-gray-300">Air-conditioned Cars, Bikes & Vans</p>
+                                    </div>
+                                    <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/40">
+                                        Active Lessons
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Features / Highlights -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-3xl font-bold text-white">Why Choose Ovelga Driving Academy?</h2>
+                    <p class="text-gray-400 mt-2">Comprehensive driving courses designed for total safety, complete practical proficiency, and immediate registration ease.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-card p-6 rounded-2xl relative">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl mb-4 border border-cyan-500/30">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">30-Minute Modular Lessons</h3>
+                        <p class="text-gray-400 text-sm">Flexible time slots tailored to your busy schedule. Pay only for what you practice or pick standard bundle packages.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl relative">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 border border-emerald-500/30">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Direct WhatsApp Updates</h3>
+                        <p class="text-gray-400 text-sm">Receive direct slot confirmations, instant payment receipts, and trial dates directly on your WhatsApp number.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl relative">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl mb-4 border border-blue-500/30">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">PayHere & Online Banking</h3>
+                        <p class="text-gray-400 text-sm">Instant receipt generation, zero hidden fees, with options for direct bank deposit or card payments.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Branches Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="glass-panel rounded-3xl p-8 border border-cyan-500/20">
+                    <div class="md:flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Our Operational Branches</h3>
+                            <p class="text-gray-400 text-sm mt-1">Visit or connect with our nearest branch for document submissions.</p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <button onclick="openWhatsAppDirect('Machan, please share the Google Maps location for Maharagama branch.')" class="bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 px-5 py-2.5 rounded-xl font-medium text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-location-dot text-cyan-400"></i>
+                                <span>Get Map Directions</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                        <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                            <h4 class="font-bold text-cyan-300">Maharagama Main Branch</h4>
+                            <p class="text-xs text-gray-400 mt-1">High Level Road, Maharagama (Near Navinna Junction)</p>
+                            <p class="text-xs text-emerald-400 font-medium mt-2"><i class="fa-solid fa-phone"></i> +94 77 123 4567</p>
+                        </div>
+                        <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                            <h4 class="font-bold text-cyan-300">Pannipitiya Branch</h4>
+                            <p class="text-xs text-gray-400 mt-1">Moraketiya Junction, Pannipitiya</p>
+                            <p class="text-xs text-emerald-400 font-medium mt-2"><i class="fa-solid fa-phone"></i> +94 77 987 6543</p>
+                        </div>
+                        <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+                            <h4 class="font-bold text-cyan-300">Kottawa Training Ground</h4>
+                            <p class="text-xs text-gray-400 mt-1">Station Road, Kottawa</p>
+                            <p class="text-xs text-emerald-400 font-medium mt-2"><i class="fa-solid fa-phone"></i> +94 71 555 1212</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: PACKAGES & CALCULATOR ================= -->
+        <section id="tab-packages" class="tab-content hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase">Custom Driving Estimator</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Interactive Package Builder</h2>
+                    <p class="text-gray-400 mt-2">Pick your vehicles, adjust practice slots (30 mins each), add optional add-ons, and calculate exact costs instantly.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left Column: Controls & Pickers -->
+                    <div class="lg:col-span-8 space-y-8">
+                        
+                        <!-- 1. Vehicle Selection -->
+                        <div class="glass-card p-6 rounded-2xl border border-cyan-900/50">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                                <span class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">1</span>
+                                <span>Select Vehicle Categories</span>
+                            </h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Dual Auto/Manual Car -->
+                                <label class="cursor-pointer border border-gray-800 p-4 rounded-xl flex items-center space-x-4 bg-gray-900/40 hover:bg-cyan-950/30 transition border-cyan-500/20">
+                                    <input type="checkbox" id="v-car" onchange="calculateCustomPrice()" checked class="w-5 h-5 accent-cyan-500 rounded">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold text-white">Car (Dual Auto / Manual)</span>
+                                            <span class="text-cyan-400 text-sm font-bold">LKR 12,500</span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">Includes basic theory materials & test arrangement.</p>
+                                    </div>
+                                </label>
+
+                                <!-- Motorbike -->
+                                <label class="cursor-pointer border border-gray-800 p-4 rounded-xl flex items-center space-x-4 bg-gray-900/40 hover:bg-cyan-950/30 transition">
+                                    <input type="checkbox" id="v-bike" onchange="calculateCustomPrice()" class="w-5 h-5 accent-cyan-500 rounded">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold text-white">Motorbike (Clutch / Scooter)</span>
+                                            <span class="text-cyan-400 text-sm font-bold">LKR 6,500</span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">8-figure balance training included.</p>
+                                    </div>
+                                </label>
+
+                                <!-- Three Wheeler -->
+                                <label class="cursor-pointer border border-gray-800 p-4 rounded-xl flex items-center space-x-4 bg-gray-900/40 hover:bg-cyan-950/30 transition">
+                                    <input type="checkbox" id="v-tuk" onchange="calculateCustomPrice()" class="w-5 h-5 accent-cyan-500 rounded">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold text-white">Three Wheeler</span>
+                                            <span class="text-cyan-400 text-sm font-bold">LKR 7,500</span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">Full control & reverse training.</p>
+                                    </div>
+                                </label>
+
+                                <!-- Premium SUV -->
+                                <label class="cursor-pointer border border-gray-800 p-4 rounded-xl flex items-center space-x-4 bg-gray-900/40 hover:bg-cyan-950/30 transition">
+                                    <input type="checkbox" id="v-suv" onchange="calculateCustomPrice()" class="w-5 h-5 accent-cyan-500 rounded">
+                                    <div class="flex-1">
+                                        <div class="flex justify-between">
+                                            <span class="font-semibold text-white">SUV Drive Experience</span>
+                                            <span class="text-cyan-400 text-sm font-bold">LKR 9,000</span>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">Modern Automatic SUV luxury drive.</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 2. Practice Slots Quantity (Interactive Slider) -->
+                        <div class="glass-card p-6 rounded-2xl border border-cyan-900/50">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                                    <span class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">2</span>
+                                    <span>Practical Practice Slots (30 Mins Each)</span>
+                                </h3>
+                                <span class="bg-cyan-950 text-cyan-400 text-sm px-3 py-1 rounded-full font-bold border border-cyan-500/40" id="slot-count-badge">8 Slots (4 Hrs)</span>
+                            </div>
+
+                            <input type="range" id="slot-slider" min="2" max="30" value="8" step="2" oninput="calculateCustomPrice()" class="w-full accent-cyan-400 h-2 bg-gray-800 rounded-lg cursor-pointer">
+
+                            <div class="flex justify-between text-xs text-gray-400 mt-2 font-mono">
+                                <span>2 Slots (1hr)</span>
+                                <span>10 Slots (5hrs)</span>
+                                <span>20 Slots (10hrs)</span>
+                                <span>30 Slots (15hrs)</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3"><i class="fa-solid fa-circle-info text-cyan-400"></i> Rate: LKR 1,200 per 30-minute individual practical session.</p>
+                        </div>
+
+                        <!-- 3. Add-Ons -->
+                        <div class="glass-card p-6 rounded-2xl border border-cyan-900/50">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                                <span class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">3</span>
+                                <span>Optional Extras & Services</span>
+                            </h3>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <label class="flex items-center space-x-3 p-3 bg-gray-900/40 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                                    <input type="checkbox" id="addon-medical" onchange="calculateCustomPrice()" class="w-4 h-4 accent-cyan-500 rounded">
+                                    <span class="text-sm text-gray-300">National Medical Checkup Fee (+LKR 2,500)</span>
+                                </label>
+
+                                <label class="flex items-center space-x-3 p-3 bg-gray-900/40 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                                    <input type="checkbox" id="addon-rental" onchange="calculateCustomPrice()" checked class="w-4 h-4 accent-cyan-500 rounded">
+                                    <span class="text-sm text-gray-300">Trial Day Vehicle Rental (+LKR 3,500)</span>
+                                </label>
+
+                                <label class="flex items-center space-x-3 p-3 bg-gray-900/40 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                                    <input type="checkbox" id="addon-app" onchange="calculateCustomPrice()" checked class="w-4 h-4 accent-cyan-500 rounded">
+                                    <span class="text-sm text-gray-300">Theory Book & Online Exam App (+LKR 1,500)</span>
+                                </label>
+
+                                <label class="flex items-center space-x-3 p-3 bg-gray-900/40 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                                    <input type="checkbox" id="addon-express" onchange="calculateCustomPrice()" class="w-4 h-4 accent-cyan-500 rounded">
+                                    <span class="text-sm text-gray-300">Express VIP Trial Booking (+LKR 4,000)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Live Order Summary & WhatsApp Send -->
+                    <div class="lg:col-span-4">
+                        <div class="glass-panel rounded-2xl p-6 sticky top-28 border border-cyan-500/30 shadow-2xl">
+                            <h3 class="text-xl font-bold text-white border-b border-gray-800 pb-3 flex items-center justify-between">
+                                <span>Plan Summary</span>
+                                <i class="fa-solid fa-receipt text-cyan-400"></i>
+                            </h3>
+
+                            <div class="space-y-3 py-4 text-sm border-b border-gray-800" id="summary-breakdown">
+                                <!-- Dynamic dynamic populates here -->
+                            </div>
+
+                            <div class="py-4">
+                                <p class="text-xs text-gray-400 uppercase font-semibold">Total Course Fee</p>
+                                <p class="text-3xl font-black text-cyan-400 font-mono mt-1" id="custom-total-price">LKR 0</p>
+                                <p class="text-[11px] text-emerald-400 mt-1"><i class="fa-solid fa-check-circle"></i> Flexible 2-part installment payment available.</p>
+                            </div>
+
+                            <div class="space-y-3 pt-2">
+                                <button onclick="proceedToCustomPayment()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20 transition">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Enroll & Pay Online Now</span>
+                                </button>
+
+                                <button onclick="sendPackageToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl flex items-center justify-center space-x-2 transition">
+                                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                                    <span>Send Quote to WhatsApp</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: VIDEO TUTORIALS ================= -->
+        <section id="tab-tutorials" class="tab-content hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span class="text-cyan-400 font-semibold text-sm tracking-widest uppercase">Theory & Practical Video Hub</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Driving Test Masterclass Videos</h2>
+                    <p class="text-gray-400 mt-2">Watch high-quality Sri Lanka RMV trial test tutorials for parallel parking, 3-point turns, and 8-figure motorbike tests.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Video Card 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden border border-gray-800">
+                        <div class="aspect-video w-full bg-gray-900 relative">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/6iJ47e_PThk" title="Parallel Parking Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">Car Practical</span>
+                            <h3 class="font-bold text-white text-lg mt-2">Perfect Parallel Parking Techniques</h3>
+                            <p class="text-xs text-gray-400 mt-1">Step-by-step guide on reference points, mirror adjustments, and wheel angles for 1st time pass.</p>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden border border-gray-800">
+                        <div class="aspect-video w-full bg-gray-900 relative">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/S_8qM7p60iI" title="Reverse Parking & 3 Point Turn" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-950 text-blue-400 border border-blue-800">RMV Trial Exam</span>
+                            <h3 class="font-bold text-white text-lg mt-2">3-Point Turn & Narrow Reverse</h3>
+                            <p class="text-xs text-gray-400 mt-1">Avoid common fault marks during Sri Lankan practical driving exam.</p>
+                        </div>
+                    </div>
+
+                    <!-- Video Card 3 -->
+                    <div class="glass-card rounded-2xl overflow-hidden border border-gray-800">
+                        <div class="aspect-video w-full bg-gray-900 relative">
+                            <iframe class="w-full h-full" src="https://www.youtube.com/embed/8KzH8p2I-2E" title="Bike 8-Figure Trial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-5">
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">Motorbike Test</span>
+                            <h3 class="font-bold text-white text-lg mt-2">Motorbike 8-Figure Balance Guide</h3>
+                            <p class="text-xs text-gray-400 mt-1">Clutch control & posture balance for passing the 8-track without dropping feet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: STUDENT PORTAL ================= -->
+        <section id="tab-student" class="tab-content hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
+                <!-- Login View (If not logged in) -->
+                <div id="student-login-box" class="max-w-md mx-auto glass-panel p-8 rounded-3xl border border-cyan-500/30 text-center shadow-2xl">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mx-auto mb-4 border border-cyan-500/30">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Student Login</h2>
+                    <p class="text-gray-400 text-sm mt-1">Enter your assigned Ovelga Student ID (Demo IDs: OV-1001, OV-1002, OV-1003)</p>
+
+                    <div class="mt-6 space-y-4 text-left">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Student Unique ID</label>
+                            <input type="text" id="student-id-input" placeholder="e.g. OV-1001" value="OV-1001" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 uppercase tracking-widest font-mono">
+                        </div>
+                        <button onclick="loginStudent()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                            Access Student Dashboard
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Logged In Student Dashboard -->
+                <div id="student-dashboard" class="hidden space-y-8">
+                    <!-- Top Student Card Header -->
+                    <div class="glass-panel rounded-3xl p-6 border border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-white font-bold text-xl flex items-center justify-center shadow-lg" id="st-avatar">
+                                OV
+                            </div>
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <h2 class="text-2xl font-extrabold text-white" id="st-name">Student Name</h2>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-400 text-xs font-mono border border-cyan-800" id="st-id-badge">OV-1001</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-0.5" id="st-course">Course: Dual Car + Bike</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button onclick="logoutStudent()" class="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-gray-300 rounded-xl text-sm font-semibold border border-gray-700">
+                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            </button>
+                            <button onclick="openPaymentModalForCurrentStudent()" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl text-sm font-bold shadow-md">
+                                <i class="fa-solid fa-credit-card"></i> Pay Outstanding Due
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Progress Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Progress Card 1: Practical Slots -->
+                        <div class="glass-card p-6 rounded-2xl border border-gray-800">
+                            <p class="text-xs uppercase font-semibold text-gray-400">30-Min Practical Slots</p>
+                            <div class="flex justify-between items-end mt-2">
+                                <span class="text-3xl font-black text-white" id="st-slots-completed">0 / 0</span>
+                                <span class="text-cyan-400 text-sm font-bold" id="st-slots-pct">0% Done</span>
+                            </div>
+                            <div class="w-full bg-gray-800 h-2 rounded-full mt-3 overflow-hidden">
+                                <div id="st-slot-progress-bar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-500"></div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Card 2: Payment Status -->
+                        <div class="glass-card p-6 rounded-2xl border border-gray-800">
+                            <p class="text-xs uppercase font-semibold text-gray-400">Payment Breakdown</p>
+                            <div class="mt-2 flex justify-between items-baseline">
+                                <div>
+                                    <p class="text-xs text-emerald-400">Paid: <span id="st-paid-amount" class="font-bold">LKR 0</span></p>
+                                    <p class="text-xs text-rose-400 mt-0.5">Due: <span id="st-due-amount" class="font-bold">LKR 0</span></p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold" id="st-pay-status-pill">Paid</span>
+                            </div>
+                        </div>
+
+                        <!-- Digital Student ID Pass preview -->
+                        <div class="glass-card p-6 rounded-2xl border border-cyan-500/30 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-cyan-400 uppercase font-bold">Digital Student ID</p>
+                                <p class="text-white text-sm font-semibold mt-1">Ovelga Access Pass</p>
+                                <p class="text-xs text-gray-400 mt-1">Show this QR on training ground</p>
+                            </div>
+                            <!-- QR Simulation -->
+                            <div class="w-16 h-16 bg-white p-1 rounded-lg flex items-center justify-center">
+                                <i class="fa-solid fa-qrcode text-4xl text-gray-900"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Inside Student Dashboard: Lessons & Payments -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <!-- Lesson History -->
+                        <div class="lg:col-span-7 glass-card p-6 rounded-2xl border border-gray-800">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-calendar-check text-cyan-400"></i>
+                                <span>30-Minute Attendance Log</span>
+                            </h3>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-gray-900/80 text-gray-400 uppercase font-semibold">
+                                        <tr>
+                                            <th class="p-3 rounded-l-lg">Date & Time</th>
+                                            <th class="p-3">Vehicle</th>
+                                            <th class="p-3">Instructor</th>
+                                            <th class="p-3 rounded-r-lg">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="st-attendance-table" class="divide-y divide-gray-800/60 text-gray-300">
+                                        <!-- Dynamic attendance rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment Log & Receipt Button -->
+                        <div class="lg:col-span-5 glass-card p-6 rounded-2xl border border-gray-800">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-file-invoice-dollar text-cyan-400"></i>
+                                <span>Payment History</span>
+                            </h3>
+
+                            <div id="st-payments-list" class="space-y-3 text-xs">
+                                <!-- Dynamic payment entries -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION: ADMIN MANAGEMENT PORTAL ================= -->
+        <section id="tab-admin" class="tab-content hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
+                <!-- Admin Header & Actions -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <div class="flex items-center space-x-3">
+                            <h2 class="text-3xl font-extrabold text-white">Admin Operations</h2>
+                            <span class="px-3 py-1 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-400 text-xs font-mono font-bold">Ovelga HQ System</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mt-1">Manage students, mark 30-minute attendance, track payments, & send automated WhatsApp alerts.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button onclick="openAddStudentModal()" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center space-x-2 shadow-lg">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Register New Student</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Analytics Bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card p-5 rounded-2xl border border-cyan-900/40">
+                        <p class="text-xs uppercase text-gray-400 font-semibold">Total Active Students</p>
+                        <p class="text-2xl font-black text-white mt-1" id="adm-stat-students">0</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-cyan-900/40">
+                        <p class="text-xs uppercase text-gray-400 font-semibold">Total Revenue Collected</p>
+                        <p class="text-2xl font-black text-emerald-400 mt-1" id="adm-stat-revenue">LKR 0</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-cyan-900/40">
+                        <p class="text-xs uppercase text-gray-400 font-semibold">Pending Balance Due</p>
+                        <p class="text-2xl font-black text-rose-400 mt-1" id="adm-stat-pending">LKR 0</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-2xl border border-cyan-900/40">
+                        <p class="text-xs uppercase text-gray-400 font-semibold">Lessons Conducted</p>
+                        <p class="text-2xl font-black text-cyan-400 mt-1" id="adm-stat-lessons">0 Slots</p>
+                    </div>
+                </div>
+
+                <!-- Main Admin Table Container -->
+                <div class="glass-card rounded-2xl border border-gray-800 p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <h3 class="text-xl font-bold text-white">Student Roster Database</h3>
+                        
+                        <!-- Search & Filter -->
+                        <div class="w-full sm:w-72 relative">
+                            <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-gray-500 text-xs"></i>
+                            <input type="text" id="admin-search-input" onkeyup="renderAdminTable()" placeholder="Search student name or ID..." class="w-full bg-gray-900 border border-gray-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-900 text-gray-400 uppercase font-semibold">
+                                <tr>
+                                    <th class="p-3.5 rounded-l-xl">Student ID</th>
+                                    <th class="p-3.5">Student Name</th>
+                                    <th class="p-3.5">Branch</th>
+                                    <th class="p-3.5">30-Min Lessons</th>
+                                    <th class="p-3.5">Paid / Total Fee</th>
+                                    <th class="p-3.5">WhatsApp Direct</th>
+                                    <th class="p-3.5 rounded-r-xl text-center">Manage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-student-table-body" class="divide-y divide-gray-800 text-gray-300">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL: PAYMENT GATEWAY SIMULATION ================= -->
+    <div id="payment-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-lg w-full rounded-3xl p-6 border border-cyan-500/40 relative max-h-[90vh] overflow-y-auto">
+            <!-- Close Button -->
+            <button onclick="closePaymentModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Ovelga Payment Checkout</h3>
+                    <p class="text-xs text-gray-400">Secure 256-Bit SSL Payment Engine</p>
+                </div>
+            </div>
+
+            <!-- Payment Target Details -->
+            <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-800 mb-6">
+                <div class="flex justify-between text-xs text-gray-400">
+                    <span>Purpose:</span>
+                    <span id="pay-purpose-text" class="text-white font-medium">Driving Course Fee</span>
+                </div>
+                <div class="flex justify-between text-sm text-white font-bold mt-2 pt-2 border-t border-gray-800">
+                    <span>Total Payable:</span>
+                    <span id="pay-amount-display" class="text-cyan-400 font-mono text-lg">LKR 0</span>
+                </div>
+            </div>
+
+            <!-- Select Payment Method -->
+            <div class="space-y-3 mb-6">
+                <label class="block text-xs font-semibold text-gray-400 uppercase">Select Payment Channel</label>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" onclick="selectPayMethod('payhere')" id="pay-btn-payhere" class="p-3 bg-cyan-950 border-2 border-cyan-500 rounded-xl text-left flex items-center space-x-2">
+                        <i class="fa-solid fa-credit-card text-cyan-400"></i>
+                        <div>
+                            <p class="text-xs font-bold text-white">PayHere Card</p>
+                            <p class="text-[10px] text-gray-400">Visa / Master / Amex</p>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selectPayMethod('bank')" id="pay-btn-bank" class="p-3 bg-gray-900 border border-gray-800 rounded-xl text-left flex items-center space-x-2 hover:border-gray-700">
+                        <i class="fa-solid fa-building-columns text-emerald-400"></i>
+                        <div>
+                            <p class="text-xs font-bold text-white">Bank Transfer</p>
+                            <p class="text-[10px] text-gray-400">BOC / Sampath / Com</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form: Card Details (PayHere simulation) -->
+            <div id="method-card-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Student ID / Full Name</label>
+                    <input type="text" id="pay-student-name" placeholder="OV-1001 or Full Name" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Cardholder Name</label>
+                    <input type="text" placeholder="John Doe" value="K. A. Perera" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Card Number (Simulated)</label>
+                    <input type="text" placeholder="4111 •••• •••• 8888" value="4111 2222 3333 4444" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white font-mono">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Expiry Date</label>
+                        <input type="text" placeholder="MM/YY" value="08/28" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">CVC / CVV</label>
+                        <input type="password" placeholder="123" value="789" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white font-mono">
+                    </div>
+                </div>
+
+                <button onclick="executePaymentProcess()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-3 rounded-xl shadow-lg mt-2 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Confirm & Generate Official Receipt</span>
+                </button>
+            </div>
+
+            <!-- Form: Bank Transfer Display -->
+            <div id="method-bank-info" class="hidden space-y-4">
+                <div class="bg-gray-900 p-4 rounded-xl text-xs space-y-2 border border-gray-800">
+                    <p class="font-bold text-cyan-400">Bank Account Options (Ovelga Driving School):</p>
+                    <p class="text-gray-300"><b>Bank of Ceylon (BOC):</b> 78901234 (Maharagama Branch)</p>
+                    <p class="text-gray-300"><b>Commercial Bank:</b> 1000234567 (Kottawa Branch)</p>
+                    <p class="text-gray-300"><b>Sampath Bank:</b> 00291100342 (Pannipitiya Branch)</p>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Student ID</label>
+                    <input type="text" id="pay-bank-student-id" placeholder="OV-1001" value="OV-1001" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Bank Reference / Slip Txn ID</label>
+                    <input type="text" id="pay-bank-ref" placeholder="e.g. TXN-882391" value="TXN-902312" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white font-mono">
+                </div>
+                <button onclick="executePaymentProcess('bank')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg">
+                    Submit Bank Slip Deposit & Request Receipt
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= MODAL: RECEIPT & PRINT MODAL ================= -->
+    <div id="receipt-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-lg w-full rounded-3xl p-6 border border-emerald-500/40 relative">
+            <button onclick="closeReceiptModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <!-- Printable Receipt Area -->
+            <div id="receipt-print-area" class="bg-slate-900 p-6 rounded-2xl border border-gray-800 text-gray-200 font-sans space-y-4">
+                <div class="flex justify-between items-start border-b border-gray-800 pb-4">
+                    <div>
+                        <h2 class="text-xl font-black text-cyan-400">OVELGA DRIVING SCHOOL</h2>
+                        <p class="text-[10px] text-gray-400">Official Payment Receipt & Confirmation</p>
+                        <p class="text-[10px] text-gray-400">Maharagama | Pannipitiya | Kottawa</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/30">VERIFIED</span>
+                        <p class="text-[10px] font-mono text-gray-400 mt-1" id="rec-id">REC-9921</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <span class="text-gray-400 block text-[10px]">Student Name:</span>
+                        <strong id="rec-student-name" class="text-white">John Doe</strong>
+                    </div>
+                    <div>
+                        <span class="text-gray-400 block text-[10px]">Date & Time:</span>
+                        <span id="rec-date" class="text-white">2026-10-09</span>
+                    </div>
+                </div>
+
+                <div class="bg-gray-950 p-3 rounded-lg border border-gray-800 space-y-1 text-xs font-mono">
+                    <div class="flex justify-between">
+                        <span>Paid Amount:</span>
+                        <strong id="rec-amount" class="text-emerald-400">LKR 0</strong>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-gray-400">
+                        <span>Payment Channel:</span>
+                        <span id="rec-method">PayHere Card</span>
+                    </div>
+                </div>
+
+                <p class="text-[10px] text-gray-400 text-center italic">Thank you for choosing Ovelga. Present this receipt during your training slot.</p>
+            </div>
+
+            <!-- Action Buttons for Receipt -->
+            <div class="grid grid-cols-2 gap-3 mt-4">
+                <button onclick="downloadReceiptPDF()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Download Receipt PDF</span>
+                </button>
+
+                <button onclick="sendReceiptToWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>Send to WhatsApp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: ADMIN MARK ATTENDANCE ================= -->
+    <div id="attendance-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-6 border border-cyan-500/40 relative">
+            <button onclick="closeAttendanceModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-white mb-1">Mark 30-Min Lesson Slot</h3>
+            <p class="text-xs text-gray-400 mb-4">Record student practice session for <span id="att-student-name" class="text-cyan-400 font-bold"></span></p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Vehicle Practiced</label>
+                    <select id="att-vehicle" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white">
+                        <option value="Dual Car (Auto)">Dual Car (Auto)</option>
+                        <option value="Dual Car (Manual)">Dual Car (Manual)</option>
+                        <option value="Motorbike (Clutch)">Motorbike (Clutch)</option>
+                        <option value="Three Wheeler">Three Wheeler</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1">Instructor Notes</label>
+                    <input type="text" id="att-notes" placeholder="e.g. Parallel parking practiced cleanly." value="30-min reverse gear & 3-point turn practice." class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+
+                <button onclick="saveAttendanceRecord()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 rounded-xl">
+                    Save Attendance & Update Student Progress
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Widget -->
+    <button onclick="openWhatsAppDirect('Hello Ovelga Driving School, I need help with lesson registration!')" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-400 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl neon-glow transition transform hover:scale-110">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </button>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // OVELGA MAIN DATA STORE INITIALIZATION
+        const OVELGA_PHONE = "+94771234567"; // Demo WhatsApp Official Line
+
+        // Default Demo Data
+        const defaultStudents = [
+            {
+                id: "OV-1001",
+                name: "Kamal Perera",
+                phone: "+94771112233",
+                branch: "Maharagama",
+                course: "Car Dual Auto + Bike",
+                totalSlots: 10,
+                completedSlots: 4,
+                totalFee: 22500,
+                paidFee: 15000,
+                attendance: [
+                    { date: "2026-10-01 09:00 AM", vehicle: "Dual Car (Auto)", instructor: "Instructor Sunanda", status: "Present" },
+                    { date: "2026-10-03 10:30 AM", vehicle: "Dual Car (Auto)", instructor: "Instructor Sunanda", status: "Present" },
+                    { date: "2026-10-05 08:00 AM", vehicle: "Motorbike (Clutch)", instructor: "Instructor Nimal", status: "Present" },
+                    { date: "2026-10-08 02:00 PM", vehicle: "Dual Car (Auto)", instructor: "Instructor Sunanda", status: "Present" }
+                ],
+                payments: [
+                    { date: "2026-09-25", amount: 10000, method: "PayHere Card", ref: "ORD-99120" },
+                    { date: "2026-10-02", amount: 5000, method: "Bank Deposit", ref: "TXN-88201" }
+                ]
+            },
+            {
+                id: "OV-1002",
+                name: "Dilini Fernando",
+                phone: "+94719876543",
+                branch: "Pannipitiya",
+                course: "Car Manual Package",
+                totalSlots: 8,
+                completedSlots: 2,
+                totalFee: 18000,
+                paidFee: 18000,
+                attendance: [
+                    { date: "2026-10-04 03:00 PM", vehicle: "Dual Car (Manual)", instructor: "Instructor Bandara", status: "Present" },
+                    { date: "2026-10-07 04:00 PM", vehicle: "Dual Car (Manual)", instructor: "Instructor Bandara", status: "Present" }
+                ],
+                payments: [
+                    { date: "2026-09-28", amount: 18000, method: "PayHere Card", ref: "ORD-11029" }
+                ]
+            },
+            {
+                id: "OV-1003",
+                name: "Nuwan Silva",
+                phone: "+94754443322",
+                branch: "Kottawa",
+                course: "Three Wheeler Mastery",
+                totalSlots: 6,
+                completedSlots: 1,
+                totalFee: 14000,
+                paidFee: 7000,
+                attendance: [
+                    { date: "2026-10-06 11:00 AM", vehicle: "Three Wheeler", instructor: "Instructor Ruwan", status: "Present" }
+                ],
+                payments: [
+                    { date: "2026-10-01", amount: 7000, method: "Cash HQ", ref: "CASH-002" }
+                ]
+            }
+        ];
+
+        // State Management
+        let students = JSON.parse(localStorage.getItem('ovelga_students')) || defaultStudents;
+        let currentStudent = null;
+        let activePayAmount = 0;
+        let activePayPurpose = "";
+        let selectedPayMethod = "payhere";
+        let activeAttendanceStudentId = null;
+        let lastGeneratedReceipt = null;
+
+        // Save State
+        function saveState() {
+            localStorage.setItem('ovelga_students', JSON.stringify(students));
+        }
+
+        // NAVIGATION TAB SWITCHER
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            if (tabId === 'admin') {
+                renderAdminTable();
+                updateAdminAnalytics();
+            }
+            if (tabId === 'student' && currentStudent) {
+                renderStudentDashboard();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const el = document.getElementById('mobile-menu');
+            el.classList.toggle('hidden');
+        }
+
+        // WHATSAPP DIRECT LINKING ENGINE
+        function openWhatsAppDirect(message) {
+            const encodedMsg = encodeURIComponent(message);
+            const waUrl = `https://wa.me/${OVELGA_PHONE.replace('+', '')}?text=${encodedMsg}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // CUSTOM PACKAGE CALCULATOR LOGIC
+        function calculateCustomPrice() {
+            let total = 0;
+            let breakdown = [];
+
+            // Vehicles
+            if (document.getElementById('v-car').checked) {
+                total += 12500;
+                breakdown.push(`<span>Car Category:</span><strong>LKR 12,500</strong>`);
+            }
+            if (document.getElementById('v-bike').checked) {
+                total += 6500;
+                breakdown.push(`<span>Bike Category:</span><strong>LKR 6,500</strong>`);
+            }
+            if (document.getElementById('v-tuk').checked) {
+                total += 7500;
+                breakdown.push(`<span>3-Wheel Category:</span><strong>LKR 7,500</strong>`);
+            }
+            if (document.getElementById('v-suv').checked) {
+                total += 9000;
+                breakdown.push(`<span>SUV Experience:</span><strong>LKR 9,000</strong>`);
+            }
+
+            // Slots
+            const slots = parseInt(document.getElementById('slot-slider').value);
+            const slotCost = slots * 1200;
+            total += slotCost;
+            document.getElementById('slot-count-badge').innerText = `${slots} Slots (${slots * 0.5} Hours)`;
+            breakdown.push(`<span>${slots} Practical Slots (30-min):</span><strong>LKR ${slotCost.toLocaleString()}</strong>`);
+
+            // Addons
+            if (document.getElementById('addon-medical').checked) {
+                total += 2500;
+                breakdown.push(`<span>Medical Checkup:</span><strong>LKR 2,500</strong>`);
+            }
+            if (document.getElementById('addon-rental').checked) {
+                total += 3500;
+                breakdown.push(`<span>Trial Car Rental:</span><strong>LKR 3,500</strong>`);
+            }
+            if (document.getElementById('addon-app').checked) {
+                total += 1500;
+                breakdown.push(`<span>Theory Book & App:</span><strong>LKR 1,500</strong>`);
+            }
+            if (document.getElementById('addon-express').checked) {
+                total += 4000;
+                breakdown.push(`<span>Express Booking:</span><strong>LKR 4,000</strong>`);
+            }
+
+            document.getElementById('custom-total-price').innerText = `LKR ${total.toLocaleString()}`;
+            
+            const summaryContainer = document.getElementById('summary-breakdown');
+            summaryContainer.innerHTML = breakdown.map(item => `<div class="flex justify-between text-gray-300">${item}</div>`).join('');
+
+            return total;
+        }
+
+        function sendPackageToWhatsApp() {
+            const total = calculateCustomPrice();
+            const slots = document.getElementById('slot-slider').value;
+            
+            let message = `Machan / Ovelga Team, I generated a customized driving course package:\n\n`;
+            message += `🚗 Practical Slots: ${slots} slots (${slots * 0.5} hours)\n`;
+            message += `💰 Estimated Total: LKR ${total.toLocaleString()}\n\n`;
+            message += `Please confirm my booking and schedule my first medical appointment!`;
+
+            openWhatsAppDirect(message);
+        }
+
+        function proceedToCustomPayment() {
+            const total = calculateCustomPrice();
+            openPaymentModal(total, "Customized Driving Course Package Enrollment");
+        }
+
+        // PAYMENT MODAL CONTROLS
+        function openPaymentModal(amount, purpose) {
+            activePayAmount = amount;
+            activePayPurpose = purpose;
+            
+            document.getElementById('pay-amount-display').innerText = `LKR ${amount.toLocaleString()}`;
+            document.getElementById('pay-purpose-text').innerText = purpose;
+            
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
+
+        function selectPayMethod(method) {
+            selectedPayMethod = method;
+            if (method === 'payhere') {
+                document.getElementById('method-card-form').classList.remove('hidden');
+                document.getElementById('method-bank-info').classList.add('hidden');
+                
+                document.getElementById('pay-btn-payhere').classList.add('border-cyan-500', 'bg-cyan-950');
+                document.getElementById('pay-btn-bank').classList.remove('border-cyan-500', 'bg-cyan-950');
+            } else {
+                document.getElementById('method-card-form').classList.add('hidden');
+                document.getElementById('method-bank-info').classList.remove('hidden');
+
+                document.getElementById('pay-btn-bank').classList.add('border-cyan-500', 'bg-cyan-950');
+                document.getElementById('pay-btn-payhere').classList.remove('border-cyan-500', 'bg-cyan-950');
+            }
+        }
+
+        function executePaymentProcess(type = 'card') {
+            const nameInput = (type === 'bank') ? document.getElementById('pay-bank-student-id').value : document.getElementById('pay-student-name').value;
+            const refInput = (type === 'bank') ? document.getElementById('pay-bank-ref').value : "CARD-" + Math.floor(100000 + Math.random() * 900000);
+            
+            const studentName = nameInput || "New Ovelga Student";
+            
+            // If logged in student, update student balance in data store
+            let targetStudent = students.find(s => s.id === nameInput || s.name.toLowerCase().includes(nameInput.toLowerCase()));
+            if (!targetStudent && currentStudent) {
+                targetStudent = currentStudent;
+            }
+
+            if (targetStudent) {
+                targetStudent.paidFee += activePayAmount;
+                targetStudent.payments.push({
+                    date: new Date().toISOString().split('T')[0],
+                    amount: activePayAmount,
+                    method: type === 'bank' ? 'Bank Transfer' : 'PayHere Card',
+                    ref: refInput
+                });
+                saveState();
+            }
+
+            // Generate Receipt Object
+            lastGeneratedReceipt = {
+                id: "REC-" + Math.floor(1000 + Math.random() * 9000),
+                studentName: targetStudent ? targetStudent.name : studentName,
+                date: new Date().toLocaleDateString('en-GB') + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                amount: activePayAmount,
+                method: type === 'bank' ? 'Bank Deposit' : 'PayHere Card',
+                ref: refInput
+            };
+
+            closePaymentModal();
+            showReceiptModal(lastGeneratedReceipt);
+        }
+
+        function showReceiptModal(receipt) {
+            document.getElementById('rec-id').innerText = receipt.id;
+            document.getElementById('rec-student-name').innerText = receipt.studentName;
+            document.getElementById('rec-date').innerText = receipt.date;
+            document.getElementById('rec-amount').innerText = `LKR ${receipt.amount.toLocaleString()}`;
+            document.getElementById('rec-method').innerText = `${receipt.method} (${receipt.ref})`;
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+
+            if (currentStudent) {
+                renderStudentDashboard();
+            }
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+        function downloadReceiptPDF() {
+            const element = document.getElementById('receipt-print-area');
+            const opt = {
+                margin:       10,
+                filename:     `Ovelga_Receipt_${lastGeneratedReceipt ? lastGeneratedReceipt.id : 'Pay'}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function sendReceiptToWhatsApp() {
+            if (!lastGeneratedReceipt) return;
+            let msg = `Ovelga Driving School Payment Receipt:\n\n`;
+            msg += `🧾 Receipt No: ${lastGeneratedReceipt.id}\n`;
+            msg += `👤 Student: ${lastGeneratedReceipt.studentName}\n`;
+            msg += `💰 Paid Amount: LKR ${lastGeneratedReceipt.amount.toLocaleString()}\n`;
+            msg += `💳 Method: ${lastGeneratedReceipt.method}\n`;
+            msg += `📅 Date: ${lastGeneratedReceipt.date}\n\n`;
+            msg += `Please verify this payment for my driving slot registration.`;
+
+            openWhatsAppDirect(msg);
+        }
+
+        // STUDENT PORTAL SYSTEM
+        function loginStudent() {
+            const idInput = document.getElementById('student-id-input').value.trim().toUpperCase();
+            const found = students.find(s => s.id.toUpperCase() === idInput);
+
+            if (found) {
+                currentStudent = found;
+                document.getElementById('student-login-box').classList.add('hidden');
+                document.getElementById('student-dashboard').classList.remove('hidden');
+                renderStudentDashboard();
+            } else {
+                alert("Invalid Student ID! Try demo IDs: OV-1001, OV-1002, OV-1003");
+            }
+        }
+
+        function logoutStudent() {
+            currentStudent = null;
+            document.getElementById('student-login-box').classList.remove('hidden');
+            document.getElementById('student-dashboard').classList.add('hidden');
+        }
+
+        function renderStudentDashboard() {
+            if (!currentStudent) return;
+
+            document.getElementById('st-name').innerText = currentStudent.name;
+            document.getElementById('st-id-badge').innerText = currentStudent.id;
+            document.getElementById('st-course').innerText = `Course: ${currentStudent.course} (${currentStudent.branch} Branch)`;
+
+            // Slots
+            const pct = Math.round((currentStudent.completedSlots / currentStudent.totalSlots) * 100) || 0;
+            document.getElementById('st-slots-completed').innerText = `${currentStudent.completedSlots} / ${currentStudent.totalSlots}`;
+            document.getElementById('st-slots-pct').innerText = `${pct}% Done`;
+            document.getElementById('st-slot-progress-bar').style.width = `${pct}%`;
+
+            // Payments
+            const due = currentStudent.totalFee - currentStudent.paidFee;
+            document.getElementById('st-paid-amount').innerText = `LKR ${currentStudent.paidFee.toLocaleString()}`;
+            document.getElementById('st-due-amount').innerText = `LKR ${due.toLocaleString()}`;
+
+            const pill = document.getElementById('st-pay-status-pill');
+            if (due <= 0) {
+                pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                pill.innerText = "Fully Paid";
+            } else {
+                pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                pill.innerText = "Pending Due";
+            }
+
+            // Attendance Table
+            const attBody = document.getElementById('st-attendance-table');
+            if (currentStudent.attendance.length === 0) {
+                attBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No practice sessions logged yet.</td></tr>`;
+            } else {
+                attBody.innerHTML = currentStudent.attendance.map(a => `
+                    <tr class="hover:bg-gray-800/40">
+                        <td class="p-3 font-mono">${a.date}</td>
+                        <td class="p-3 font-semibold text-cyan-300">${a.vehicle}</td>
+                        <td class="p-3">${a.instructor}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold text-[10px]">${a.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            // Payments List
+            const payList = document.getElementById('st-payments-list');
+            if (currentStudent.payments.length === 0) {
+                payList.innerHTML = `<p class="text-gray-500 text-center py-4">No payment records found.</p>`;
+            } else {
+                payList.innerHTML = currentStudent.payments.map(p => `
+                    <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-white">LKR ${p.amount.toLocaleString()}</p>
+                            <p class="text-[10px] text-gray-400">${p.method} • ${p.date}</p>
+                        </div>
+                        <span class="font-mono text-[10px] text-cyan-400">${p.ref}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openPaymentModalForCurrentStudent() {
+            if (!currentStudent) return;
+            const due = currentStudent.totalFee - currentStudent.paidFee;
+            if (due <= 0) {
+                alert("Your course fee is already fully paid!");
+                return;
+            }
+            openPaymentModal(due, `Outstanding Course Fee Balance Payment for ${currentStudent.id}`);
+        }
+
+        // ADMIN MANAGEMENT LOGIC
+        function renderAdminTable() {
+            const query = (document.getElementById('admin-search-input').value || '').toLowerCase();
+            const tbody = document.getElementById('admin-student-table-body');
+
+            const filtered = students.filter(s => s.name.toLowerCase().includes(query) || s.id.toLowerCase().includes(query));
+
+            tbody.innerHTML = filtered.map(s => {
+                const due = s.totalFee - s.paidFee;
+                return `
+                    <tr class="hover:bg-gray-900/50">
+                        <td class="p-3.5 font-mono text-cyan-400 font-bold">${s.id}</td>
+                        <td class="p-3.5 font-semibold text-white">${s.name}</td>
+                        <td class="p-3.5 text-gray-400">${s.branch}</td>
+                        <td class="p-3.5">
+                            <span class="font-bold text-white">${s.completedSlots}</span> / ${s.totalSlots} Slots
+                        </td>
+                        <td class="p-3.5">
+                            <span class="text-emerald-400 font-bold">LKR ${s.paidFee.toLocaleString()}</span> 
+                            <span class="text-gray-500">/ ${s.totalFee.toLocaleString()}</span>
+                            ${due > 0 ? `<br><span class="text-[10px] text-rose-400">Due: LKR ${due.toLocaleString()}</span>` : ''}
+                        </td>
+                        <td class="p-3.5">
+                            <button onclick="sendStudentWhatsAppReminder('${s.id}')" class="px-2.5 py-1 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded-lg font-bold text-[11px] flex items-center space-x-1 hover:bg-emerald-900">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <span>Remind</span>
+                            </button>
+                        </td>
+                        <td class="p-3.5 text-center space-x-1">
+                            <button onclick="openMarkAttendanceModal('${s.id}')" title="Mark 30-min Attendance" class="p-1.5 bg-cyan-950 text-cyan-300 rounded-lg border border-cyan-800 hover:bg-cyan-900">
+                                <i class="fa-solid fa-plus text-xs"></i> Session
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateAdminAnalytics() {
+            document.getElementById('adm-stat-students').innerText = students.length;
+            
+            const totalRev = students.reduce((acc, s) => acc + s.paidFee, 0);
+            document.getElementById('adm-stat-revenue').innerText = `LKR ${totalRev.toLocaleString()}`;
+
+            const totalPending = students.reduce((acc, s) => acc + (s.totalFee - s.paidFee), 0);
+            document.getElementById('adm-stat-pending').innerText = `LKR ${totalPending.toLocaleString()}`;
+
+            const totalLessons = students.reduce((acc, s) => acc + s.completedSlots, 0);
+            document.getElementById('adm-stat-lessons').innerText = `${totalLessons} Slots`;
+        }
+
+        function sendStudentWhatsAppReminder(studentId) {
+            const st = students.find(s => s.id === studentId);
+            if (!st) return;
+
+            const due = st.totalFee - st.paidFee;
+            let msg = `Ovelga Driving School Notification for ${st.name} (${st.id}):\n\n`;
+            msg += `🚗 Completed Lessons: ${st.completedSlots}/${st.totalSlots} slots\n`;
+            if (due > 0) {
+                msg += `⚠️ Pending Balance: LKR ${due.toLocaleString()}\n`;
+                msg += `Please settle your remaining fee at your earliest convenience.`;
+            } else {
+                msg += `✅ Your account fee is fully cleared! Good luck on your upcoming practical trial exam!`;
+            }
+
+            openWhatsAppDirect(msg);
+        }
+
+        function openMarkAttendanceModal(studentId) {
+            activeAttendanceStudentId = studentId;
+            const st = students.find(s => s.id === studentId);
+            if (!st) return;
+
+            document.getElementById('att-student-name').innerText = `${st.name} (${st.id})`;
+            document.getElementById('attendance-modal').classList.remove('hidden');
+        }
+
+        function closeAttendanceModal() {
+            document.getElementById('attendance-modal').classList.add('hidden');
+        }
+
+        function saveAttendanceRecord() {
+            if (!activeAttendanceStudentId) return;
+            const st = students.find(s => s.id === activeAttendanceStudentId);
+            if (!st) return;
+
+            const vehicle = document.getElementById('att-vehicle').value;
+            const notes = document.getElementById('att-notes').value;
+
+            st.completedSlots += 1;
+            st.attendance.unshift({
+                date: new Date().toLocaleDateString('en-GB') + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                vehicle: vehicle,
+                instructor: "Instructor Ovelga HQ",
+                status: "Present (" + notes + ")"
+            });
+
+            saveState();
+            closeAttendanceModal();
+            renderAdminTable();
+            updateAdminAnalytics();
+            alert(`Marked 30-minute practice session for ${st.name}!`);
+        }
+
+        function openAddStudentModal() {
+            const name = prompt("Enter New Student Full Name:");
+            if (!name) return;
+            const branch = prompt("Enter Branch (Maharagama / Pannipitiya / Kottawa):", "Maharagama");
+            
+            const newId = "OV-" + (1000 + students.length + 1);
+            students.push({
+                id: newId,
+                name: name,
+                phone: "+94770000000",
+                branch: branch || "Maharagama",
+                course: "Standard Full Driving Package",
+                totalSlots: 8,
+                completedSlots: 0,
+                totalFee: 20000,
+                paidFee: 5000,
+                attendance: [],
+                payments: [
+                    { date: new Date().toISOString().split('T')[0], amount: 5000, method: "Registration Advance", ref: "REG-01" }
+                ]
+            });
+
+            saveState();
+            renderAdminTable();
+            updateAdminAnalytics();
+            alert(`Student Registered Successfully! Assigned Student ID: ${newId}`);
+        }
+
+        // INITIAL LOAD EVENT
+        window.onload = function () {
+            calculateCustomPrice();
+            renderAdminTable();
+            updateAdminAnalytics();
+            
+            // GSAP Animations
+            gsap.from("header", { y: -50, opacity: 0, duration: 1, ease: "power3.out" });
+            gsap.from("#tab-home h1", { opacity: 0, y: 30, duration: 1, delay: 0.2 });
+        };
+    </script>
+</body>
+</html>
